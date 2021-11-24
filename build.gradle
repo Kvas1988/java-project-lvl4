@@ -47,5 +47,8 @@ repositories {
     mavenCentral()
 }
 
+task stage(dependsOn: ['clean', 'installDist'])
+installDist.mustRunAfter clean
+
 group = 'hexlet.code'
 version = '1.0-SNAPSHOT'
