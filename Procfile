@@ -1,0 +1,1 @@
+web: sh build/libs/app-1.0-SNAPSHOT.jar
