@@ -29,6 +29,10 @@ compileJava {
     options.release = 16
 }
 
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
