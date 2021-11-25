@@ -1,5 +1,6 @@
 package hexlet.code;
 
+import hexlet.code.controllers.RootController;
 import io.javalin.Javalin;
 import io.javalin.plugin.rendering.template.JavalinThymeleaf;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
@@ -7,7 +8,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 // import static io.javalin.apibuilder.ApiBuilder.path;
-import static io.javalin.apibuilder.ApiBuilder.get;
+// import static io.javalin.apibuilder.ApiBuilder.get;
 // import static io.javalin.apibuilder.ApiBuilder.post;
 
 public class App {
@@ -18,15 +19,17 @@ public class App {
     }
 
     private static void addRoutes(Javalin app) {
-        app.routes(() -> {
-            get("/", ctx -> ctx.result("Hello World"));
-        });
+        app.get("/", RootController.welcome);
+        // app.routes(() -> {
+        //     get("/", ctx -> ctx.result("Hello World"));
+        // });
     }
 
     public static Javalin getApp() {
         Javalin app = Javalin.create(config -> {
             config.enableDevLogging();
             JavalinThymeleaf.configure(getTemplateEngine());
+            config.enableWebjars();
         });
 
         addRoutes(app);
