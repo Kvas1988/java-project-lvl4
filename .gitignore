@@ -9,3 +9,6 @@ build
 
 # env vars for act tool
 my.secrets
+
+# dev db
+hexlet.mv.db
