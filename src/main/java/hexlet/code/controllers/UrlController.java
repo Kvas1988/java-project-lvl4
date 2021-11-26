@@ -4,6 +4,8 @@ import io.javalin.http.Handler;
 
 import hexlet.code.model.Url;
 import hexlet.code.model.query.QUrl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,8 +13,11 @@ import java.util.List;
 
 public final class UrlController {
 
+    static final Logger LOGGER = LoggerFactory.getLogger(UrlController.class);
+
     public static Handler createUrl = ctx -> {
         String url = ctx.formParam("url");
+        LOGGER.info("got url from form");
 
         url = getDomain(url);
         if (url == null) {
@@ -33,6 +38,7 @@ public final class UrlController {
 
         Url newUrl = new Url(url);
         newUrl.save();
+        LOGGER.info("new url saved to DB");
         ctx.sessionAttribute("flash", "Страница успешно добавлена");
         ctx.redirect("/urls");
     };
@@ -42,6 +48,7 @@ public final class UrlController {
                 .orderBy()
                     .id.asc()
                 .findList();
+        LOGGER.info("got url list from db");
 
         ctx.attribute("urls", urls);
         ctx.render("urls/index.html");
