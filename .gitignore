@@ -12,3 +12,4 @@ my.secrets
 
 # dev db
 hexlet.mv.db
+hexlet.trace.db
