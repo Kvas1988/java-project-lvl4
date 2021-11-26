@@ -1,5 +1,6 @@
 package hexlet.code;
 
+import hexlet.code.controllers.UrlController;
 import io.ebean.DB;
 import io.ebean.Transaction;
 import io.javalin.Javalin;
@@ -50,5 +51,14 @@ public final class AppTest {
         assertEquals(200, response.getStatus());
 
         assertTrue(response.getBody().contains("Page Analyzer"));
+    }
+
+    @Test
+    void getDomainTest() {
+        String actual = UrlController.getDomain("https://some-domain.org/example/path");
+        assertEquals("https://some-domain.org", actual);
+
+        String actual1 = UrlController.getDomain("https://some-domain.org:8080/example/path");
+        assertEquals("https://some-domain.org:8080", actual1);
     }
 }

@@ -8,7 +8,14 @@
 <section layout:fragment="content">
     <div class="card">
         <div class="card-body">
-            Page Analyzer
+            <h1>Page Analyzer</h1>
+            <form action="/urls" method="post">
+                <div class="mb-3">
+                    <label>Введите страницу</label>
+                    <input class="form-control" type="text" name="url">
+                </div>
+                <button class="btn btn-primary" type="submit">Проверить</button>
+            </form>
         </div>
     </div>
 </section>

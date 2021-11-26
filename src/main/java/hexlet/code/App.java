@@ -1,15 +1,17 @@
 package hexlet.code;
 
 import hexlet.code.controllers.RootController;
+import hexlet.code.controllers.UrlController;
 import io.javalin.Javalin;
 import io.javalin.plugin.rendering.template.JavalinThymeleaf;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-// import static io.javalin.apibuilder.ApiBuilder.path;
-// import static io.javalin.apibuilder.ApiBuilder.get;
-// import static io.javalin.apibuilder.ApiBuilder.post;
+
+import static io.javalin.apibuilder.ApiBuilder.path;
+import static io.javalin.apibuilder.ApiBuilder.get;
+import static io.javalin.apibuilder.ApiBuilder.post;
 
 public class App {
 
@@ -18,11 +20,24 @@ public class App {
         return Integer.valueOf(port);
     }
 
+    private static String getMode() {
+        return System.getenv().getOrDefault("APP_ENV", "development");
+    }
+
+    private static boolean isProduction() {
+        return getMode().equals("production");
+    }
+
     private static void addRoutes(Javalin app) {
-        app.get("/", RootController.welcome);
-        // app.routes(() -> {
-        //     get("/", ctx -> ctx.result("Hello World"));
-        // });
+        app.get("/", RootController.root);
+
+        app.routes(() -> {
+            path("/urls", () -> {
+                post(UrlController.createUrl);
+                get(UrlController.urlList);
+                get("/{id}", UrlController.showUrl);
+            });
+        });
     }
 
     public static Javalin getApp() {

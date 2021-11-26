@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/application.html}">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Show URL</title>
+</head>
+<section layout:fragment="content">
+  <h1>URL</h1>
+  <div class="card" th:object="${url}">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item" th:text="'Id: ' + *{id}"></li>
+      <li class="list-group-item" th:text="'Adress: ' + *{name}"></li>
+      <li class="list-group-item" th:text="'Created at: ' + *{createdAt}"></li>
+    </ul>
+  </div>
+</section>
+</html>
