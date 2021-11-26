@@ -42,7 +42,9 @@ public class App {
 
     public static Javalin getApp() {
         Javalin app = Javalin.create(config -> {
-            config.enableDevLogging();
+            if (!isProduction()) {
+                config.enableDevLogging();
+            }
             JavalinThymeleaf.configure(getTemplateEngine());
             config.enableWebjars();
         });
