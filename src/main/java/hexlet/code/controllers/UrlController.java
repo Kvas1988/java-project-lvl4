@@ -1,15 +1,19 @@
 package hexlet.code.controllers;
 
+import hexlet.code.model.UrlCheck;
 import io.javalin.http.Handler;
 
 import hexlet.code.model.Url;
 import hexlet.code.model.query.QUrl;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
+
+import static hexlet.code.Utils.getContentFromBody;
+import static hexlet.code.Utils.getDomain;
 
 public final class UrlController {
 
@@ -70,19 +74,47 @@ public final class UrlController {
         ctx.render("urls/show.html");
     };
 
-    public static String getDomain(String url) {
-        URL u = null;
-        try {
-            u = new URL(url);
-        } catch (MalformedURLException e) {
-            return null;
+
+    public static Handler checkUrl = ctx -> {
+        long id = ctx.pathParamAsClass("id", long.class).getOrDefault(null);
+        Url url = new QUrl()
+                .id.equalTo(id)
+                .findOne();
+
+        if (url == null) {
+            ctx.sessionAttribute("flash", "Invalid url");
+            ctx.redirect("/urls");
+            return;
         }
 
-        String domain = u.getProtocol() + "://" + u.getHost();
-        int port = u.getPort();
-        if (port != -1) {
-            domain += ":" + port;
+        HttpResponse<String> response = null;
+        try {
+            response = Unirest
+                    .get(url.getName())
+                    .asString();
+        } catch (Exception e) {
+            ctx.sessionAttribute("flash", e.getMessage());
+            ctx.redirect("/urls/" + id);
+            return;
         }
-        return domain;
-    }
+
+        String title = getContentFromBody(response.getBody(), "<title[^\\>]*>", "</title>");
+        String h1 = getContentFromBody(response.getBody(), "<h1[^\\>]*>", "</h1>");
+        String description = getContentFromBody(response.getBody(),
+                "<meta(.*?)name=\"description\"(.*?)content=\"",
+                "\""
+        );
+
+        UrlCheck urlCheck = new UrlCheck(
+                response.getStatus(),
+                title,
+                h1,
+                description,
+                url
+        );
+
+        urlCheck.save();
+        ctx.redirect("/urls/" + id);
+    };
+
 }

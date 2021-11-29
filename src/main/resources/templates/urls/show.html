@@ -15,5 +15,34 @@
       <li class="list-group-item" th:text="'Created at: ' + *{createdAt}"></li>
     </ul>
   </div>
+
+  <div>
+    <h1>Checks</h1>
+    <form th:action="@{/urls/{id}/checks(id=${url.id})}" method="post">
+      <button class="btn btn-primary" type="submit">Check</button>
+    </form>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Status Code</th>
+          <th>Title</th>
+          <th>h1</th>
+          <th>Description</th>
+          <th>Check Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="check : ${url.urlChecks}">
+          <td th:text="${check.id}"></td>
+          <td th:text="${check.statusCode}"></td>
+          <td th:text="${check.title}"></td>
+          <td th:text="${check.h1}"></td>
+          <td th:text="${check.description}"></td>
+          <td th:text="${check.createdAt}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 </html>

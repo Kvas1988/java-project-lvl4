@@ -12,12 +12,18 @@
       <th>ID</th>
       <th>Adress</th>
       <th>Created At</th>
+      <th>Last Check</th>
+      <th>Status Code</th>
     </thead>
     <tbody>
       <tr th:each="url : ${urls}" th:object="${url}">
         <td th:text="*{id}"></td>
-        <td th:text="*{name}"></td>
+        <td>
+          <a th:href="@{/urls/{id}(id=*{id})}" th:text="*{name}"></a>
+        </td>
         <td th:text="*{createdAt}"></td>
+        <td th:text="${url.getLastCheck() != null} ? ${url.getLastCheck().createdAt} : ''"></td>
+        <td th:text="${url.getLastCheck() != null} ? ${url.getLastCheck().statusCode} : ''"></td>
       </tr>
     </tbody>
   </table>

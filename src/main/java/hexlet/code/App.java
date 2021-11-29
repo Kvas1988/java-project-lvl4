@@ -36,6 +36,7 @@ public class App {
                 post(UrlController.createUrl);
                 get(UrlController.urlList);
                 get("/{id}", UrlController.showUrl);
+                post("/{id}/checks", UrlController.checkUrl);
             });
         });
     }
