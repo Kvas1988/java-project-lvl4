@@ -119,6 +119,7 @@ public final class UrlController {
         );
 
         urlCheck.save();
+        ctx.sessionAttribute("flash", "Страница успешно проверена");
         ctx.redirect("/urls/" + id);
     };
 
