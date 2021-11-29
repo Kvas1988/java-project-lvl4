@@ -7,12 +7,13 @@ import hexlet.code.model.Url;
 import hexlet.code.model.query.QUrl;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static hexlet.code.Utils.getContentFromBody;
 import static hexlet.code.Utils.getDomain;
 
 public final class UrlController {
@@ -98,12 +99,16 @@ public final class UrlController {
             return;
         }
 
-        String title = getContentFromBody(response.getBody(), "<title[^\\>]*>", "</title>");
-        String h1 = getContentFromBody(response.getBody(), "<h1[^\\>]*>", "</h1>");
-        String description = getContentFromBody(response.getBody(),
-                "<meta(.*?)name=\"description\"(.*?)content=\"",
-                "\""
-        );
+        // Parse body
+        Document doc = Jsoup.parse(response.getBody());
+        String title = doc.title();
+        String h1 = doc.selectFirst("h1") != null
+                ? doc.selectFirst("h1").text()
+                : "";
+        String description = doc.selectFirst("meta[name=description]").attr("content") != null
+                ? doc.selectFirst("meta[name=description]").attr("content")
+                : "";
+
 
         UrlCheck urlCheck = new UrlCheck(
                 response.getStatus(),

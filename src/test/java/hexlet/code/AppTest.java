@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static hexlet.code.Utils.getContentFromBody;
 import static hexlet.code.Utils.getDomain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -166,21 +165,5 @@ public final class AppTest {
 
         String actual1 = getDomain("https://some-domain.org:8080/example/path");
         assertEquals("https://some-domain.org:8080", actual1);
-    }
-
-    @Test
-    void getContentFromBodyTest() throws IOException {
-        String body = Files.readString(new File("src/test/resources/bodytest.html").toPath());
-        String actual = getContentFromBody(body,
-                "<meta(.*?)name=\"description\"(.*?)content=\"",
-                "\""
-        );
-
-        String expected = "GitHub is where over 73 million developers shape the future of software, together. "
-                + "Contribute to the open source community, manage your Git repositories, review code like a pro, "
-                + "track bugs and features, power your CI/CD and DevOps workflows, and secure code before you "
-                + "commit it.";
-
-        assertEquals(expected, actual);
     }
 }

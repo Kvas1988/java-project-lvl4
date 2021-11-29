@@ -19,14 +19,4 @@ public class Utils {
         }
         return domain;
     }
-
-    public static String getContentFromBody(String body, String begin, String end) {
-        String[] s = body.split(begin);
-
-        if (s.length == 1) {
-            return null;
-        }
-
-        return s[1].split(end)[0];
-    }
 }
