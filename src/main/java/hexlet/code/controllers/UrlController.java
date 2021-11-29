@@ -105,7 +105,7 @@ public final class UrlController {
         String h1 = doc.selectFirst("h1") != null
                 ? doc.selectFirst("h1").text()
                 : "";
-        String description = doc.selectFirst("meta[name=description]").attr("content") != null
+        String description = doc.selectFirst("meta[name=description]") != null
                 ? doc.selectFirst("meta[name=description]").attr("content")
                 : "";
 
