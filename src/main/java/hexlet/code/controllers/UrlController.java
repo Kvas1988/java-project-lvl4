@@ -26,8 +26,9 @@ public final class UrlController {
 
         url = getDomain(url);
         if (url == null) {
+            LOGGER.warn("invalid address given");
             ctx.sessionAttribute("flash", "Некорректный URL");
-            ctx.redirect("/urls");
+            ctx.status(400).redirect("/urls");
             return;
         }
 
@@ -36,6 +37,7 @@ public final class UrlController {
                 .findOne();
 
         if (checkUrl != null) {
+            LOGGER.info("Address already exists");
             ctx.sessionAttribute("flash", "Страница уже существует");
             ctx.redirect("/urls");
             return;

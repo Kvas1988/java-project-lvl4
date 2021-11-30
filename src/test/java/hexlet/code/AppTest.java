@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import static hexlet.code.Utils.getDomain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -87,7 +88,7 @@ public final class AppTest {
     }
 
     @Test
-    void postUrlsTest() {
+    void createUrlTestPositive() {
         String newAdress = "https://baeldung.com";
         HttpResponse<String> responsePost = Unirest
                 .post(baseUrl + "/urls")
@@ -113,7 +114,42 @@ public final class AppTest {
     }
 
     @Test
-    void getUrlsIdTest() {
+    void createUrlTestInvalid() {
+        String newAdress = "loremIpsum";
+        HttpResponse<String> responsePost = Unirest
+                .post(baseUrl + "/urls")
+                .field("url", newAdress)
+                .asString();
+
+        assertEquals(302, responsePost.getStatus());
+
+        HttpResponse<String> response = Unirest
+                .get(baseUrl + "/urls")
+                .asString();
+        assertEquals(302, responsePost.getStatus());
+        assertTrue(response.getBody().contains("Некорректный URL"));
+        assertFalse(response.getBody().contains(newAdress));
+    }
+
+    @Test
+    void createUrlTestExists() {
+        HttpResponse<String> responsePost = Unirest
+                .post(baseUrl + "/urls")
+                .field("url", existingUrl.getName())
+                .asString();
+
+        assertEquals(302, responsePost.getStatus());
+
+        HttpResponse<String> response = Unirest
+                .get(baseUrl + "/urls")
+                .asString();
+        assertEquals(302, responsePost.getStatus());
+        assertTrue(response.getBody().contains("Страница уже существует"));
+        assertTrue(response.getBody().contains(existingUrl.getName()));
+    }
+
+    @Test
+    void showUrlTestPositive() {
         HttpResponse<String> response = Unirest
                 .get(baseUrl + "/urls/" + existingUrl.getId())
                 .asString();
@@ -123,7 +159,17 @@ public final class AppTest {
     }
 
     @Test
-    void checkUrlTest() {
+    void showUrlTestNegative() {
+        HttpResponse<String> response = Unirest
+                .get(baseUrl + "/urls/9999")
+                .asString();
+
+        assertEquals(404, response.getStatus());
+        assertTrue(response.getBody().contains("404. Not Found"));
+    }
+
+    @Test
+    void checkUrlTestPositive() {
         String mockUrl = server.url("/").toString();
 
         // create page for mock site
@@ -154,8 +200,24 @@ public final class AppTest {
         assertEquals(200, response.getStatus());
         assertTrue(response.getBody().contains("GitHub: Where the world builds software · GitHub")); // Title
         assertTrue(response.getBody().contains("Where the world builds software ")); // h1
+    }
 
+    @Test
+    void checkUrlTestNegative() {
+        HttpResponse<String> responsePost = Unirest
+                .post(baseUrl + "/urls/9999/checks")
+                .asString();
 
+        assertEquals(302, responsePost.getStatus());
+        assertEquals("/urls",
+                responsePost.getHeaders().getFirst("Location"));
+
+        HttpResponse<String> response = Unirest
+                .get(baseUrl + "/urls")
+                .asString();
+
+        assertEquals(200, response.getStatus());
+        assertTrue(response.getBody().contains("Invalid url"));
     }
 
     @Test
