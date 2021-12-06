@@ -4,6 +4,7 @@ import hexlet.code.controllers.RootController;
 import hexlet.code.controllers.UrlController;
 import io.javalin.Javalin;
 import io.javalin.plugin.rendering.template.JavalinThymeleaf;
+import kong.unirest.Unirest;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
@@ -70,7 +71,14 @@ public class App {
         return templateEngine;
     }
 
+    private static void setupUnirest() {
+        Unirest.config()
+                .connectTimeout(2000)
+                .automaticRetries(false);
+    }
+
     public static void main(String[] args) {
+        setupUnirest();
         Javalin app = getApp();
         app.start(getPort());
     }
